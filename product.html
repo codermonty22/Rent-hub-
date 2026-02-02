@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Professional rental marketplace - Find quality products for rent">
+    <meta name="keywords" content="rental, marketplace, products, equipment">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Product Details - RentHuB</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+
+    <header>
+        <nav class="container">
+            <div class="logo" onclick="navigateHome()">RentHuB</div>
+            <div class="nav-links">
+                <a href="#" data-page="home" onclick="navigateHome(event)">Home</a>
+                <a href="#" data-page="products" onclick="navigateProducts(event)">Products</a>
+                <a href="#" data-page="categories" onclick="navigateCategories(event)">Categories</a>
+                <a href="#" data-page="about" onclick="navigateAbout(event)">About</a>
+                <div class="cart-container">
+                    <button class="cart-icon" onclick="toggleCart()" aria-label="Shopping cart">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumbs">
+            <a href="#" onclick="navigateHome()">Home</a> / 
+            <a href="#" onclick="navigateProducts()">Products</a> / 
+            <span id="breadcrumbCategory">Category</span> / 
+            <span id="breadcrumbProduct">Product</span>
+        </div>
+
+        <section class="product-section">
+            <div class="product-grid loading" id="productContent">
+                <div class="image-gallery">
+                    <div class="main-image">
+                        <img id="mainImage" src="https://via.placeholder.com/500x500?text=Loading..." alt="Product Image" loading="lazy">
+                        <button class="image-zoom" onclick="openImageModal()" aria-label="Zoom image">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                    </div>
+                    <div class="image-thumbnails" id="thumbnails">
+                        </div>
+                </div>
+
+                <div class="product-info">
+                    <div class="product-badges">
+                        <span class="product-badge" id="productBadge">Loading...</span>
+                        <span class="product-badge badge-available" id="availabilityBadge">Available</span>
+                    </div>
+                    
+                    <h1 class="product-title" id="productTitle">Loading Product...</h1>
+                    
+                    <div class="product-rating">
+                        <div class="stars" id="productStars">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <span class="rating-text" id="ratingText">(Loading reviews)</span>
+                    </div>
+
+                    <div class="owner-info">
+                        <div class="owner-avatar" id="ownerAvatar">JD</div>
+                        <div class="owner-details">
+                            <h4 id="ownerName">John Doe</h4>
+                            <p id="ownerLocation">Mumbai, Maharashtra</p>
+                            <div class="owner-rating">
+                                <div class="stars">
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                    <span class="star">★</span>
+                                </div>
+                                <span>(4.8 • 23 rentals)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="trust-indicators">
+                        <div class="trust-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Verified Owner</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-certificate"></i>
+                            <span>Quality Assured</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-truck"></i>
+                            <span>Same Day Delivery</span>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="current-price" id="currentPrice">₹0</div>
+                        <div class="price-details">
+                            <span class="original-price" id="originalPrice" style="display: none;"></span>
+                            <span class="discount" id="discount" style="display: none;"></span>
+                        </div>
+                        
+                        <div class="rental-terms">
+                            <h4><i class="fas fa-info-circle"></i> Rental Terms</h4>
+                            <p id="rentalTerms">Minimum rental period: 1 day. Security deposit may apply.</p>
+                        </div>
+                    </div>
+
+                    <div class="product-description" id="productDescription">
+                        Loading product description...
+                    </div>
+
+                    <div class="product-options" id="productOptions" style="display: none;">
+                        <div class="option-group" id="colorGroup" style="display: none;">
+                            <div class="option-label">
+                                <i class="fas fa-palette"></i>
+                                Color:
+                            </div>
+                            <div class="color-options" id="colorOptions">
+                                </div>
+                        </div>
+
+                        <div class="option-group" id="sizeGroup" style="display: none;">
+                            <div class="option-label">
+                                <i class="fas fa-ruler"></i>
+                                Size:
+                            </div>
+                            <div class="size-options" id="sizeOptions">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="purchase-controls">
+                        <div class="option-group">
+                            <div class="option-label">
+                                <i class="fas fa-clock"></i>
+                                Rental Duration:
+                            </div>
+                            <div class="rental-duration">
+                                <div class="duration-option selected" onclick="selectDuration(this)" data-duration="1" data-unit="day">
+                                    1 Day
+                                </div>
+                                <div class="duration-option" onclick="selectDuration(this)" data-duration="7" data-unit="week">
+                                    1 Week
+                                </div>
+                                <div class="duration-option" onclick="selectDuration(this)" data-duration="30" data-unit="month">
+                                    1 Month
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="addToCart()" id="addToCartBtn">
+                                <i class="fas fa-cart-plus"></i>
+                                Rent Now
+                            </button>
+                            <button class="btn btn-secondary" onclick="addToWishlist()" id="wishlistBtn">
+                                <i class="fas fa-heart"></i>
+                                Save
+                            </button>
+                            <button class="btn btn-chat" onclick="openChat()" id="chatBtn">
+                                <i class="fas fa-comments"></i>
+                                Chat
+                            </button>
+                        </div>
+
+                        <div class="security-notice">
+                            <i class="fas fa-lock"></i>
+                            Secure transaction with 256-bit SSL encryption
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reviews-section">
+            <div class="reviews-header">
+                <div>
+                    <h3>Customer Reviews</h3>
+                </div>
+                <div class="reviews-summary">
+                    <div class="overall-rating" id="overallRating">4.5</div>
+                    <div class="stars">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p>Based on <span id="reviewCount">12</span> reviews</p>
+                </div>
+                <div class="rating-breakdown">
+                    <div class="rating-bar">
+                        <span>5★</span>
+                        <div class="rating-bar-fill">
+                            <div class="rating-fill" style="width: 70%"></div>
+                        </div>
+                        <span>70%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>4★</span>
+                        <div class="rating-bar-fill">
+                            <div class="rating-fill" style="width: 20%"></div>
+                        </div>
+                        <span>20%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>3★</span>
+                        <div class="rating-bar-fill">
+                            <div class="rating-fill" style="width: 5%"></div>
+                        </div>
+                        <span>5%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>2★</span>
+                        <div class="rating-bar-fill">
+                            <div class="rating-fill" style="width: 3%"></div>
+                        </div>
+                        <span>3%</span>
+                    </div>
+                    <div class="rating-bar">
+                        <span>1★</span>
+                        <div class="rating-bar-fill">
+                            <div class="rating-fill" style="width: 2%"></div>
+                        </div>
+                        <span>2%</span>
+                    </div>
+                </div>
+                <button class="write-review-btn" onclick="openReviewModal()">
+                    <i class="fas fa-edit"></i> Write Review
+                </button>
+            </div>
+
+            <div class="reviews-list" id="reviewsList">
+                </div>
+        </section>
+
+        <section class="features">
+            <h3>Why Choose RentHuB?</h3>
+            <div class="features-grid">
+                <div class="feature">
+                    <i class="fas fa-shield-check feature-icon"></i>
+                    <div class="feature-title">Quality Assured</div>
+                    <div class="feature-desc">Every product is thoroughly inspected and verified for quality before listing</div>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-user-check feature-icon"></i>
+                    <div class="feature-title">Trusted Owners</div>
+                    <div class="feature-desc">All owners are verified through ID verification and background checks</div>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-calendar-alt feature-icon"></i>
+                    <div class="feature-title">Flexible Rental</div>
+                    <div class="feature-desc">Choose from daily, weekly, or monthly rentals to fit your needs perfectly</div>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-headset feature-icon"></i>
+                    <div class="feature-title">24/7 Support</div>
+                    <div class="feature-desc">Round-the-clock customer support for any questions or issues</div>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shipping-fast feature-icon"></i>
+                    <div class="feature-title">Fast Delivery</div>
+                    <div class="feature-desc">Same-day delivery available in most areas with tracking updates</div>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-money-bill-wave feature-icon"></i>
+                    <div class="feature-title">Best Prices</div>
+                    <div class="feature-desc">Competitive pricing with transparent costs and no hidden fees</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="chat-widget">
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <h4>Chat with Owner</h4>
+                <button class="chat-close" onclick="closeChat()">&times;</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+            </div>
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+                <button class="chat-send" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <button class="chat-button" onclick="toggleChat()" id="chatButton">
+            <i class="fas fa-comments"></i>
+        </button>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            <img id="modalImage" src="" alt="Product Image Zoom" style="width: 100%; border-radius: 12px;">
+        </div>
+    </div>
+
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeReviewModal()">&times;</button>
+            <h3>Write a Review</h3>
+            <form class="review-form" onsubmit="submitReview(event)">
+                <div class="form-group">
+                    <label class="form-label">Rating</label>
+                    <div class="rating-input" id="ratingInput">
+                        <span class="rating-star" data-rating="1" onclick="selectRating(1)">★</span>
+                        <span class="rating-star" data-rating="2" onclick="selectRating(2)">★</span>
+                        <span class="rating-star" data-rating="3" onclick="selectRating(3)">★</span>
+                        <span class="rating-star" data-rating="4" onclick="selectRating(4)">★</span>
+                        <span class="rating-star" data-rating="5" onclick="selectRating(5)">★</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reviewTitle">Review Title</label>
+                    <input type="text" id="reviewTitle" class="form-input" placeholder="Great product!" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reviewContent">Your Review</label>
+                    <textarea id="reviewContent" class="form-textarea" placeholder="Tell others about your experience..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reviewerName">Your Name</label>
+                    <input type="text" id="reviewerName" class="form-input" placeholder="Your name" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Review
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

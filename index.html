@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">i
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>RentHuB - Peer to Peer Rentals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="container">
+            <nav>
+<a href="#" class="logo">RENTHUB</a>
+                <ul class="nav-links">
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#how-it-works"><i class="fas fa-cog"></i> How It Works</a></li>
+                    <li><a href="#categories"><i class="fas fa-th-large"></i> Categories</a></li>
+                    <li><a href="#popular"><i class="fas fa-star"></i> Popular Items</a></li>
+                    <li><a href="#premium"><i class="fas fa-crown"></i> Premium</a></li>
+                    <li>
+                        <button id="newProfileBtn" class="profile-icon-button" aria-label="Profile" onclick="window.location.href='auth.html'">
+                            <i class="fas fa-user-circle profile-icon"></i>
+                        </button>
+                    </li>
+                </ul>
+                <div class="nav-actions">
+                    <div class="rental-toggle">
+                        <button class="toggle-btn active" onclick="switchRentalType('short')">Short Term</button>
+                        <button class="toggle-btn" onclick="switchRentalType('long')">Long Term</button>
+                    </div>
+                    <a href="#" class="btn" id="add-listing-btn">Add Listing</a>
+                    <a href="#" class="btn" id="listing-btn">Listing</a>
+                </div>
+                <div class="listing-dropdown" id="listingDropdown" aria-hidden="true" style="display:none;">
+                    <div class="listing-grid">
+                        <a href="products.html?category=furniture" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=100&h=80&fit=crop" alt="Furniture" />
+                            <span>Furniture</span>
+                        </a>
+                        <a href="products.html?category=cars" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=100&h=80&fit=crop" alt="Cars" />
+                            <span>Cars</span>
+                        </a>
+                        <a href="products.html?category=properties" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=100&h=80&fit=crop" alt="Properties" />
+                            <span>Properties</span>
+                        </a>
+                        <a href="products.html?category=mobiles" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=100&h=80&fit=crop" alt="Mobiles" />
+                            <span>Mobiles</span>
+                        </a>
+                        <a href="products.html?category=pets" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=100&h=80&fit=crop" alt="Pets" />
+                            <span>Pets</span>
+                        </a>
+                        <a href="products.html?category=fashions" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=100&h=80&fit=crop" alt="Fashions" />
+                            <span>Fashions</span>
+                        </a>
+                        <a href="products.html?category=books& sports" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=100&h=80&fit=crop" alt="Books & Sports" />
+                            <span>Books & Sports</span>
+                        </a>
+                        <a href="products.html?category=electronics" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1517336714731-4892fd3ca76d?w=100&h=80&fit=crop" alt="Electronics" />
+                            <span>Electronics</span>
+                        </a>
+                        <a href="products.html?category=services" class="listing-card">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=100&h=80&fit=crop" alt="Services" />
+                            <span>Services</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="container">
+            <h1>Discover, Rent, and Earn with <span style="color:#e91e63;">RentHuB</span></h1>
+            <p>Unlock a world of possibilities. Find unique items, connect with trusted owners, and experience hassle-free rentals. Your next adventure or side hustle starts here!</p>
+            <div class="hero-cta-buttons">
+                <a href="#categories" class="btn btn-primary-large">Start Renting Now 🚀</a>
+                <a href="#add-listing-btn" class="btn btn-secondary-large">List Your Item & Earn 💰</a>
+            </div>
+            <form class="search-bar">
+                <div class="search-input-container">
+                    <input type="text" placeholder="What are you looking for?" id="searchInput">
+                    <div class="trending-suggestions" id="trendingSuggestions">
+                        <div class="suggestion-item" onclick="selectSuggestion('Camera')">📷 Camera</div>
+                        <div class="suggestion-item" onclick="selectSuggestion('Laptop')">💻 Laptop</div>
+                        <div class="suggestion-item" onclick="selectSuggestion('Bicycle')">🚲 Bicycle</div>
+                        <div class="suggestion-item" onclick="selectSuggestion('Drone')">🚁 Drone</div>
+                        <div class="suggestion-item" onclick="selectSuggestion('Projector')">📽️ Projector</div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <select id="categorySelect">
+                        <option value="">🏷️ All Categories</option>
+                        <option value="furniture">🪑 Furniture</option>
+                        <option value="cars">🚗 Cars</option>
+                        <option value="properties">🏠 Properties</option>
+                        <option value="mobiles">📱 Mobiles</option>
+                        <option value="electronics">📺 Electronics</option>
+                        <option value="pets">🐕 Pets</option>
+                        <option value="fashions">👕 Fashions</option>
+                        <option value="books& sports">📚 Books & Sports</option>
+                        <option value="services">🔧 Services</option>
+                    </select>
+                    <select id="priceSelect">
+                        <option value="">💰 Any Price</option>
+                        <option value="0-499">₹0-499</option>
+                        <option value="500-999">₹500-999</option>
+                        <option value="1000-4999">₹1000-4999</option>
+                        <option value="5000+">₹5000+</option>
+                    </select>
+                    <input type="text" placeholder="📍 Location" id="locationInput">
+                </div>
+                <div class="premium-toggle">
+                    <input type="checkbox" id="premiumOnly">
+                    <label for="premiumOnly">⭐ Premium Only</label>
+                </div>
+                </button>
+                <button class="btn btn-search-icon" type="submit" aria-label="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- VALUE PROPOSITION -->
+    <section class="value-proposition">
+        <div class="container">
+            <div class="value-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Safe & Secure</h3>
+                    <p>All transactions are protected with secure payment processing and verified user accounts.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Verified Owners</h3>
+                    <p>Every item owner is thoroughly verified with background checks and identity confirmation.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>Affordable Prices</h3>
+                    <p>Get access to premium items at a fraction of the cost compared to buying new.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="categories" id="categories">
+        <div class="container">
+            <div class="section-title">
+                <h2>Popular Categories</h2>
+                <p>Browse through thousands of items available for rent in your area</p>
+            </div>
+            <div class="categories-carousel">
+                <div class="carousel-container">
+                    <div class="carousel-track">
+                        <a href="products.html?category=furniture" class="category-card featured-category">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop" alt="Furniture">
+                                <div class="category-overlay">Featured</div>
+                            </div>
+                            <div class="category-info">
+                                <h3>Furniture</h3>
+                                <p>1,240 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=cars" class="category-card featured-category">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=400&h=300&fit=crop" alt="Cars">
+                                <div class="category-overlay">Popular</div>
+                            </div>
+                            <div class="category-info">
+                                <h3>Cars</h3>
+                                <p>850 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=properties" class="category-card">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop" alt="Properties">
+                            </div>
+                            <div class="category-info">
+                                <h3>Properties</h3>
+                                <p>750 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=mobiles" class="category-card">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=300&fit=crop" alt="Mobiles">
+                            </div>
+                            <div class="category-info">
+                                <h3>Mobiles</h3>
+                                <p>1,200 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=pets" class="category-card">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?w=400&h=300&fit=crop" alt="Pets">
+                            </div>
+                            <div class="category-info">
+                                <h3>Pets</h3>
+                                <p>450 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=fashions" class="category-card">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&h=300&fit=crop" alt="Fashions">
+                            </div>
+                            <div class="category-info">
+                                <h3>Fashions</h3>
+                                <p>1,800 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=books& sports" class="category-card">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=300&fit=crop" alt="Books & Sports">
+                            </div>
+                            <div class="category-info">
+                                <h3>Books & Sports</h3>
+                                <p>950 listings</p>
+                            </div>
+                        </a>
+                        <a href="products.html?category=services" class="category-card">
+                            <div class="category-image">
+                                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop" alt="Services">
+                            </div>
+                            <div class="category-info">
+                                <h3>Services</h3>
+                                <p>600 listings</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <button class="carousel-arrow carousel-prev" id="categoriesPrev" aria-label="Previous categories">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-arrow carousel-next" id="categoriesNext" aria-label="Next categories">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <div class="carousel-dots" id="categoriesDots"></div>
+            </div>
+        </div>
+    </section>
+    <!-- POPULAR ITEMS -->
+    <section class="popular-items" id="popular">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured Products</h2>
+                <p>Discover the latest items available for rent in your community</p>
+            </div>
+            <div class="item-grid">
+                <!-- Products will be dynamically loaded here -->
+            </div>
+        </div>
+    </section>
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How RentHuB Works</h2>
+                <p>Renting and sharing items in your community is easy with our platform</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Create a Listing</h3>
+                    <p>Add photos and details about your item. Set your price and availability.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Connect with Renters</h3>
+                    <p>Approved renters will contact you to arrange pickup or delivery.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Paid</h3>
+                    <p>Receive payment securely through our platform after the rental period.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- PREMIUM MEMBERSHIP -->
+    <section class="premium-membership" id="premium">
+        <div class="container">
+            <div class="section-title">
+                <h2>Premium Membership</h2>
+                <p>Unlock exclusive benefits and become a trusted seller on RentHuB</p>
+            </div>
+            <div class="premium-plans">
+                <div class="premium-plan">
+                    <h3>Basic</h3>
+                    <div class="price">₹299<span>/month</span></div>
+                    <ul>
+                        <li>Up to 10 listings</li>
+                        <li>Basic analytics</li>
+                        <li>Standard support</li>
+                        <li>5% commission</li>
+                    </ul>
+                    <button class="btn">Choose Basic</button>
+                </div>
+                
+                <div class="premium-plan featured">
+                    <h3>Premium</h3>
+                    <div class="price">₹599<span>/month</span></div>
+                    <ul>
+                        <li>Unlimited listings</li>
+                        <li>Priority placement</li>
+                        <li>Advanced analytics</li>
+                        <li>24/7 support</li>
+                        <li>3% commission</li>
+                        <li>Featured seller badge</li>
+                    </ul>
+                    <button class="btn">Choose Premium</button>
+                </div>
+                
+                <div class="premium-plan">
+                    <h3>Elite</h3>
+                    <div class="price">₹999<span>/month</span></div>
+                    <ul>
+                        <li>Everything in Premium</li>
+                        <li>Custom branding</li>
+                        <li>Dedicated account manager</li>
+                        <li>1% commission</li>
+                        <li>VIP customer support</li>
+                        <li>Featured in ads</li>
+                    </ul>
+                    <button class="btn">Choose Elite</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our Users Say</h2>
+                <p>Join thousands of satisfied customers who trust RentHuB for their rental needs</p>
+            </div>
+            <div class="testimonials-slider">
+                <div class="testimonial-card active">
+                    <div class="testimonial-content">
+                        <div class="testimonial-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>"RentHuB made it so easy to find a camera for my vacation. The owner was friendly and the process was seamless. Highly recommend!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="author-info">
+                                <h4>Sarah Johnson</h4>
+                                <span>Mumbai, India</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="testimonial-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>"As a student, I couldn't afford to buy expensive equipment. RentHuB helped me access professional tools for my projects at affordable rates."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="author-info">
+                                <h4>Rahul Sharma</h4>
+                                <span>Delhi, India</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="testimonial-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p>"I started earning extra income by renting out my unused items. The platform is user-friendly and the support team is amazing!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="author-info">
+                                <h4>Priya Patel</h4>
+                                <span>Bangalore, India</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-nav">
+                <button class="testimonial-prev" onclick="prevTestimonial()">&#10094;</button>
+                <div class="testimonial-dots">
+                    <span class="dot active" onclick="goToTestimonial(0)"></span>
+                    <span class="dot" onclick="goToTestimonial(1)"></span>
+                    <span class="dot" onclick="goToTestimonial(2)"></span>
+                </div>
+                <button class="testimonial-next" onclick="nextTestimonial()">&#10095;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2>Ready to Start Renting?</h2>
+            <p>Join thousands of people who are making money by renting out items they're not using.</p>
+            <div class="rental-toggle" style="justify-content: center; margin: 20px 0;">
+                <button class="toggle-btn active" onclick="switchRentalType('short')">Short Term</button>
+                <button class="toggle-btn" onclick="switchRentalType('long')">Long Term</button>
+            </div>
+            <a href="#" class="btn" id="cta-add-listing-btn">Add Your Listing Now</a>
+        </div>
+    </section>
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>RentHuB</h3>
+                    <p>The peer-to-peer marketplace for renting everything you need from people in your community.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Categories</h3>
+                    <ul>
+                        <li><a href="#">Furniture</a></li>
+                        <li><a href="#">Cars</a></li>
+                        <li><a href="#">Properties</a></li>
+                        <li><a href="#">Mobiles</a></li>
+                        <li><a href="#">Pets</a></li>
+                        <li><a href="#">Fashions</a></li>
+                        <li><a href="#">Books & Sports</a></li>
+                        <li><a href="#">Services</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety</a></li>
+                        <li><a href="#">Community Guidelines</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="social-media">
+                    <a href="#" class="social-link" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <p>&copy; 2025 RentHuB. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+   <!-- ADD LISTING MODAL -->
+<div class="modal" id="listing-modal">
+    <div class="modal-content">
+<div class="modal-header">
+    <h2>Add New Listing</h2>
+    <button class="close-modal" id="closeListingModalBtn">&times;</button>
+</div>
+        <div class="modal-body">
+            <form id="listing-form" action="http://127.0.0.1:5000/api/products" method="POST" enctype="multipart/form-data" autocomplete="off">
+                
+                <div class="form-group">
+                    <label for="item-name">Item Title<span>*</span></label>
+                    <input type="text" id="item-name" name="title" required placeholder="What are you listing?">
+                </div>
+
+                <div class="form-group">
+                    <label for="item-category">Category<span>*</span></label>
+                    <select id="item-category" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="cars">Cars</option>
+                        <option value="properties">Properties</option>
+                        <option value="mobiles">Mobiles</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="pets">Pets</option>
+                        <option value="fashions">Fashions</option>
+                        <option value="books& sports">Books & Sports</option>
+                        <option value="services">Services</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="item-description">Description<span>*</span></label>
+                    <textarea id="item-description" name="description" required placeholder="Describe your item in detail"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="item-price">Daily Price (₹)<span>*</span></label>
+                    <input type="number" id="item-price" name="price" required placeholder="Price per day" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="item-condition">Condition<span>*</span></label>
+                    <select id="item-condition" name="condition" required>
+                        <option value="">Select condition</option>
+                        <option value="new">New</option>
+                        <option value="like_new">Like New</option>
+                        <option value="good">Good</option>
+                        <option value="fair">Fair</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Rental Type<span>*</span></label>
+                    <div class="radio-group">
+                        <label>
+                            <input type="radio" name="rental-type" value="day" checked> Per Day
+                        </label>
+                        <label>
+                            <input type="radio" name="rental-type" value="week"> Per Week
+                        </label>
+                        <label>
+                            <input type="radio" name="rental-type" value="month"> Per Month
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ✅ Location Field Added -->
+                <div class="form-group">
+                    <label for="owner-location">Location<span>*</span></label>
+                    <input type="text" id="owner-location" name="location" required placeholder="Enter location (e.g. Mumbai, India)">
+                </div>
+
+                <div class="form-group">
+                    <label for="item-photos">Product Photos (min 5)<span>*</span></label>
+                    <input type="file" id="item-photos" name="images" accept="image/*" multiple required />
+                    <div id="photoPreview" class="photo-preview"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="item-cert">Product Certification (PDF/Image)<span>*</span></label>
+                    <input type="file" id="item-cert" name="cert" accept=".pdf,image/*" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="owner-phone">Contact Number<span>*</span></label>
+                    <input type="tel" id="owner-phone" name="owner_phone" required pattern="[0-9]{10,}" placeholder="Phone number">
+                </div>
+
+                <div class="form-group">
+                    <label for="owner-email">Email<span>*</span></label>
+                    <input type="email" id="owner-email" name="owner_email" required placeholder="Email address">
+                </div>
+
+                <div class="form-group">
+                    <label for="owner-address">Address<span>*</span></label>
+                    <textarea id="owner-address" name="owner_address" required placeholder="Your address"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">Submit Listing</button>
+                </div>
+
+                <div id="formError" class="form-error"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- ADVERTISEMENT MODAL -->
+    <div class="ad-modal" id="ad-modal">
+        <div class="ad-content">
+            <button class="ad-close" onclick="closeAd()">&times;</button>
+            <div class="carousel-ad">
+                <div class="carousel-slides" id="carouselSlides">
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=900&h=400&fit=crop" alt="Luxury Car Rental" class="carousel-image">
+                        <div class="carousel-overlay">
+                            <h3>Premium Car Rentals</h3>
+                            <p>Experience luxury with our premium car collection. From sports cars to SUVs, find your perfect ride.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1517336714731-4892fd3ca76d?w=900&h=400&fit=crop" alt="Electronics Rental" class="carousel-image">
+                        <div class="carousel-overlay">
+                            <h3>High-End Electronics</h3>
+                            <p>Rent the latest gadgets and electronics. MacBooks, cameras, gaming consoles and more.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&h=400&fit=crop" alt="Event Equipment" class="carousel-image">
+                        <div class="carousel-overlay">
+                                                       <h3>Event & Party Equipment</h3>
+                            <p>Make your events memorable with our professional DJ equipment and party gear.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&h=400&fit=crop" alt="Professional Camera" class="carousel-image">
+                        <div class="carousel-overlay">
+                            <h3>Professional Photography</h3>
+                            <p>Capture perfect moments with our professional camera and photography equipment.</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-arrow carousel-prev" onclick="changeSlide(-1)">‹</button>
+                <button class="carousel-arrow carousel-next" onclick="changeSlide(1)">›</button>
+                <div class="carousel-nav" id="carouselNav">
+                    <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+                    <div class="carousel-dot" onclick="goToSlide(1)"></div>
+                    <div class="carousel-dot" onclick="goToSlide(2)"></div>
+                    <div class="carousel-dot" onclick="goToSlide(3)"></div>
+                </div>
+            </div>
+            <div class="ad-main">
+                <h2>India's Most Trusted<br>Rental Marketplace</h2>
+                <p>Find the best deals, meet top-rated owners, and get inspired by our premium community. <br>Ready to rent or earn? Join the movement!</p>
+                <div class="ad-btns">
+                    <button class="ad-btn" onclick="closeAd()">Explore Premium Listings</button>
+                    <button class="ad-btn secondary" onclick="closeAd()">Become a Premium Seller</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Chatbot Button and Window -->
+    <button class="chatbot-btn" id="chatbotBtn" title="Chat with RentHuB Assistant">
+        <span>💬</span>
+    </button>
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            <span>RentHuB Assistant</span>
+            <div class="chatbot-controls">
+                <button class="chatbot-clear" onclick="clearChat()" title="Clear chat">🗑️</button>
+                <button class="chatbot-close" onclick="closeChat()" title="Close chat">✕</button>
+            </div>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <!-- Messages will be loaded dynamically -->
+        </div>
+        <div class="chatbot-input-area">
+            <input class="chatbot-input" id="chatbotInput" type="text" placeholder="Ask me anything about RentHuB..." />
+            <button class="chatbot-send" id="chatbotSend" title="Send message">➤</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        // Dynamic Category Counts
+        async function loadCategoryCounts() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/categories/counts`);
+                const data = await response.json();
+                const counts = data.counts;
+
+                // Update category grid counts
+                const categoryCards = document.querySelectorAll('.category-card');
+                categoryCards.forEach(card => {
+                    const link = card.querySelector('a');
+                    if (link) {
+                        const href = link.getAttribute('href');
+                        const categoryMatch = href.match(/category=([^&]+)/);
+                        if (categoryMatch) {
+                            const category = categoryMatch[1].toLowerCase();
+                            const countElement = card.querySelector('p');
+                            if (countElement && counts[category] !== undefined) {
+                                countElement.textContent = `${counts[category]} listings`;
+                            }
+                        }
+                    }
+                });
+
+                // Update footer categories
+                const footerLinks = document.querySelectorAll('.footer-column ul li a');
+                footerLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.includes('products.html?category=')) {
+                        const categoryMatch = href.match(/category=([^&]+)/);
+                        if (categoryMatch) {
+                            const category = categoryMatch[1].toLowerCase();
+                            if (counts[category] !== undefined) {
+                                link.textContent = `${link.textContent.split(' ')[0]} (${counts[category]})`;
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Failed to load category counts:', error);
+            }
+        }
+
+        // Load counts when page loads
+        document.addEventListener('DOMContentLoaded', loadCategoryCounts);
+    </script>
+</body>
+</html>

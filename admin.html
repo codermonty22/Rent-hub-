@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentHub Admin Panel - Verification & Users</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #FF3366; /* Cherry Pink */
+            --primary-light: #ff7094;
+            --secondary-color: #fce4ec; /* Light Pink background for cards */
+            --text-color: #333;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #fff;
+            color: var(--text-color);
+        }
+
+        /* --- Layout --- */
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: white;
+            padding: 0 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffcccc; /* Very light pink text */
+            text-decoration: none;
+            font-weight: 400;
+            transition: background-color 0.2s, color 0.2s;
+            border-left: 5px solid transparent;
+        }
+
+        .menu a.active {
+            background-color: var(--primary-light);
+            color: white;
+            border-left-color: white;
+            padding-left: 15px;
+        }
+
+        .menu a:hover:not(.active) {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .menu i {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* --- Header / Dashboard Stats --- */
+        .header {
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: white;
+            border: 2px solid var(--secondary-color);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .card-detail {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        /* --- Filter & Search --- */
+        .filter-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-group select, .filter-group input, .search-box input {
+            padding: 10px 12px;
+            border: 1px solid #ffb3c8; /* Lighter pink border */
+            border-radius: 6px;
+            background-color: white;
+            transition: border-color 0.2s;
+        }
+
+        .filter-group select:focus, .filter-group input:focus, .search-box input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box button:hover {
+            background-color: #cc0033; /* Darker cherry */
+        }
+
+        /* --- Table Styling --- */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .data-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .data-table tbody tr {
+            background-color: #fff;
+            border: 1px solid #f1f1f1;
+            border-radius: 8px;
+            transition: box-shadow 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            box-shadow: 0 2px 8px rgba(255, 51, 102, 0.2);
+        }
+
+        /* --- Status & Action Buttons --- */
+        .listing-actions button, .user-actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s, opacity 0.2s;
+            margin-right: 5px;
+        }
+
+        .listing-actions button.approve {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .listing-actions button.reject {
+            background-color: #FF5588; /* Slightly brighter pink for reject */
+            color: white;
+        }
+        
+        .listing-actions button:disabled, .user-actions button:disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-pending { background-color: #ffeb3b; color: #333; }
+        .status-approved { background-color: #4CAF50; color: white; }
+        .status-rejected { background-color: #FF3366; color: white; }
+        .status-active { background-color: #66BB6A; color: white; }
+        .status-suspended { background-color: #FF5722; color: white; }
+
+        /* --- Bulk Action Buttons --- */
+        .bulk-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .bulk-actions button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* --- Modal for Rejection --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #ffb3c8;
+            border-radius: 6px;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-actions button.submit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-actions button.cancel {
+            background-color: #ccc;
+            color: #333;
+        }
+    </style>
+    
+    <!-- Firebase Setup Imports (Placeholders for real-world functionality) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Initialize Firebase services
+        try {
+            setLogLevel('Debug');
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+            
+            if (Object.keys(firebaseConfig).length > 0) {
+                const app = initializeApp(firebaseConfig);
+                window.db = getFirestore(app);
+                window.auth = getAuth(app);
+                
+                // Authenticate with custom token or anonymously
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (initialAuthToken) {
+                    signInWithCustomToken(window.auth, initialAuthToken)
+                        .then(() => console.log("Firebase signed in with custom token."))
+                        .catch(error => console.error("Firebase sign-in error:", error));
+                } else {
+                    signInAnonymously(window.auth)
+                        .then(() => console.log("Firebase signed in anonymously."))
+                        .catch(error => console.error("Firebase sign-in error:", error));
+                }
+            } else {
+                console.warn("Firebase config not available. Running in mock mode.");
+            }
+        } catch (error) {
+            console.error("Firebase Initialization Error:", error);
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">RentHub Admin</div>
+            <nav class="menu">
+                <a href="#" class="nav-link active" data-view="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="#" class="nav-link" data-view="verification"><i class="fas fa-clipboard-list"></i> Listing Verification</a>
+                <a href="#" class="nav-link" data-view="users"><i class="fas fa-users"></i> User Management</a>
+                <!-- Removed Rental Transaction and Audit Trail as requested -->
+                <a href="#" class="nav-link" data-view="chat"><i class="fas fa-comments"></i> Chat Management</a>
+                <a href="#" class="nav-link" data-view="settings"><i class="fas fa-cogs"></i> Settings</a>
+            </nav>
+        </div>
+        
+        <!-- Main Content Area - Switchable Views -->
+        <div class="main-content">
+            
+            <!-- Dashboard/Verification View -->
+            <div id="verification-view" class="content-view">
+                <header class="header">
+                    <h1>Listing Verification & Review</h1>
+                    <button onclick="refreshAllData()" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                </header>
+
+                <!-- Dashboard Overview Stats -->
+                <h2>Dashboard Overview</h2>
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-title">Pending Verification</div>
+                        <div class="card-value" id="pending-count">0</div>
+                        <div class="card-detail">Listings awaiting admin review</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Approved Listings (Today)</div>
+                        <div class="card-value" id="approved-count">0</div>
+                        <div class="card-detail">Approved since midnight</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Rejected Listings (Total)</div>
+                        <div class="card-value" id="rejected-count">0</div>
+                        <div class="card-detail">Total rejections this month</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Total Active Renters</div>
+                        <div class="card-value">550</div>
+                        <div class="card-detail">Active user base</div>
+                    </div>
+                </div>
+
+                <!-- Search & Filters -->
+                <h2>Listing Review Queue</h2>
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label for="filter-status">Status:</label>
+                        <select id="filter-status">
+                            <option value="all">All</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+
+                        <label for="filter-category">Category:</label>
+                        <select id="filter-category">
+                            <option value="all">All</option>
+                            <option value="car">Car</option>
+                            <option value="property">Property</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Search by Listing or Seller Name">
+                        <button onclick="applyFilters()">Search</button>
+                    </div>
+                </div>
+
+                <!-- Listing Review Table -->
+                <table class="data-table" id="listings-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all"></th>
+                            <th>ID</th>
+                            <th>Listing Details</th>
+                            <th>Seller Name</th>
+                            <th>Category</th>
+                            <th>Date Posted</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Listings will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+
+                <div class="bulk-actions">
+                    <button class="listing-actions button approve" onclick="bulkAction('approve')">Bulk Approve Selected</button>
+                    <button class="listing-actions button reject" onclick="showBulkRejectModal()">Bulk Reject Selected</button>
+                </div>
+            </div>
+
+            <!-- User Management View -->
+            <div id="users-view" class="content-view" style="display: none;">
+                <header class="header">
+                    <h1>User Management</h1>
+                </header>
+                
+                <div class="filter-section">
+                    <h3>Logged-In Users (Simulated Database Data)</h3>
+                    <div class="search-box">
+                        <input type="text" id="user-search-input" placeholder="Search by User Name or ID">
+                        <button onclick="applyUserFilters()">Search</button>
+                    </div>
+                </div>
+
+                <table class="data-table" id="users-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Last Login</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Items Listed</th>
+                            <th>Items Rented</th>
+                            <th>Rating</th>
+                            <th>Joined Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Users will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Chat Management View -->
+            <div id="chat-view" class="content-view" style="display: none;">
+                <header class="header">
+                    <h1>Chat Management</h1>
+                </header>
+
+                <div class="filter-section">
+                    <h3>All Chat Messages</h3>
+                    <div class="search-box">
+                        <input type="text" id="chat-search-input" placeholder="Search by message content, sender, or product">
+                        <button onclick="applyChatFilters()">Search</button>
+                    </div>
+                </div>
+
+                <table class="data-table" id="chat-table">
+                    <thead>
+                        <tr>
+                            <th>Message ID</th>
+                            <th>Product</th>
+                            <th>Sender</th>
+                            <th>Message</th>
+                            <th>Timestamp</th>
+                            <th>Type</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Chat messages will be populated here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Rejection Modal -->
+    <div id="rejection-modal" class="modal">
+        <div class="modal-content">
+            <h3>Reject Listing(s)</h3>
+            <p>Please provide a detailed reason for rejection (this will be sent to the seller):</p>
+            <textarea id="rejection-reason" rows="4" placeholder="e.g., Photos appear to be stolen, Ownership documents are missing, Price seems fraudulent."></textarea>
+            <div class="modal-actions">
+                <button class="cancel" onclick="hideModal()">Cancel</button>
+                <button class="submit" onclick="submitRejection()">Submit Rejection</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- API Configuration ---
+        const API_BASE = 'http://localhost:5000/api';
+        let adminToken = localStorage.getItem('adminToken');
+
+        // --- Admin Authentication ---
+        async function adminLogin(email, password) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (data.token) {
+                    adminToken = data.token;
+                    localStorage.setItem('adminToken', adminToken);
+                    return { success: true, user: data.user };
+                } else {
+                    return { success: false, message: data.message };
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                return { success: false, message: 'Network error' };
+            }
+        }
+
+        function logoutAdmin() {
+            adminToken = null;
+            localStorage.removeItem('adminToken');
+            showLoginModal();
+        }
+
+        function showLoginModal() {
+            // Create login modal if it doesn't exist
+            if (!document.getElementById('admin-login-modal')) {
+                const modal = document.createElement('div');
+                modal.id = 'admin-login-modal';
+                modal.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+                        <div style="background: white; padding: 30px; border-radius: 10px; width: 400px; text-align: center;">
+                            <h2 style="color: #FF3366; margin-bottom: 20px;">Admin Login</h2>
+                            <input type="email" id="admin-email" placeholder="Email" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+                            <input type="password" id="admin-password" placeholder="Password" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px;">
+                            <button onclick="attemptAdminLogin()" style="width: 100%; padding: 10px; background: #FF3366; color: white; border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;">Login</button>
+                            <div id="login-error" style="color: red; margin-top: 10px;"></div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            document.getElementById('admin-login-modal').style.display = 'flex';
+        }
+
+        async function attemptAdminLogin() {
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+            const errorDiv = document.getElementById('login-error');
+
+            if (!email || !password) {
+                errorDiv.textContent = 'Please enter both email and password';
+                return;
+            }
+
+            const result = await adminLogin(email, password);
+            if (result.success) {
+                document.getElementById('admin-login-modal').style.display = 'none';
+                switchView('verification'); // Start with verification view
+            } else {
+                errorDiv.textContent = result.message;
+            }
+        }
+
+        // --- API Helper Functions ---
+        async function apiCall(endpoint, options = {}) {
+            // Get fresh token
+            adminToken = localStorage.getItem('adminToken');
+            
+            const defaultOptions = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(adminToken && { 'Authorization': `Bearer ${adminToken}` })
+                }
+            };
+
+            // Merge options properly, especially for body
+            const mergedOptions = {
+                ...defaultOptions,
+                ...options,
+                headers: {
+                    ...defaultOptions.headers,
+                    ...(options.headers || {})
+                }
+            };
+
+            // Convert body to JSON string if it's an object
+            if (mergedOptions.body && typeof mergedOptions.body === 'object' && !(mergedOptions.body instanceof FormData)) {
+                mergedOptions.body = JSON.stringify(mergedOptions.body);
+            }
+
+            console.log(`API Call: ${API_BASE}${endpoint}`, {
+                method: mergedOptions.method || 'GET',
+                hasToken: !!adminToken,
+                headers: mergedOptions.headers
+            });
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, mergedOptions);
+                const data = await response.json();
+                console.log(`API Response (${endpoint}):`, { status: response.status, success: response.ok, data });
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                console.error('API call error:', error);
+                return { success: false, error: error.message, status: 0 };
+            }
+        }
+
+        // --- Data Fetching Functions ---
+        async function fetchProducts() {
+            console.log('Fetching products from /admin/products...');
+            const result = await apiCall('/admin/products');
+            console.log('API call result:', result);
+            if (result.success && result.data) {
+                const products = result.data.products || [];
+                console.log('Products fetched successfully:', products.length);
+                return products;
+            }
+            console.error('Failed to fetch products:', result);
+            if (result.status === 401) {
+                console.error('Unauthorized - admin token may be invalid');
+                localStorage.removeItem('adminToken');
+                adminToken = null;
+                showLoginModal();
+            }
+            return [];
+        }
+
+        async function fetchUsers() {
+            const result = await apiCall('/admin/users');
+            if (result.success) {
+                return result.data.users || [];
+            }
+            console.error('Failed to fetch users:', result.data);
+            return [];
+        }
+
+        async function fetchChatMessages() {
+            const result = await apiCall('/admin/chat/messages');
+            if (result.success) {
+                return result.data.messages || [];
+            }
+            console.error('Failed to fetch chat messages:', result.data);
+            return [];
+        }
+
+        async function approveProduct(productId) {
+            const result = await apiCall(`/admin/products/${productId}/approve`, { method: 'POST' });
+            return result.success;
+        }
+
+        async function rejectProduct(productId, reason = '') {
+            const result = await apiCall(`/admin/products/${productId}/reject`, { 
+                method: 'POST',
+                body: JSON.stringify({ reason: reason })
+            });
+            return result.success;
+        }
+
+        // --- Data Variables ---
+        let allListings = [];
+        let allUsers = [];
+        let allChatMessages = [];
+        let currentListings = [];
+        let currentUsers = [];
+        let currentChatMessages = [];
+
+        // --- View Switching Logic ---
+
+        async function switchView(viewName) {
+            document.querySelectorAll('.content-view').forEach(view => {
+                view.style.display = 'none';
+            });
+            document.getElementById(`${viewName}-view`).style.display = 'block';
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Activate the corresponding link
+            const activeLink = document.querySelector(`.nav-link[data-view="${viewName}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            // Ensure data is rendered when switching to a view
+            if (viewName === 'verification') {
+                // Refresh listings data before applying filters
+                if (allListings.length === 0) {
+                    console.log('No listings found, refreshing data...');
+                    await loadInitialData();
+                }
+                await applyFilters();
+            } else if (viewName === 'users') {
+                if (allUsers.length === 0) {
+                    console.log('No users found, refreshing data...');
+                    await loadInitialData();
+                }
+                renderUsers(currentUsers.length > 0 ? currentUsers : allUsers);
+            } else if (viewName === 'chat') {
+                if (allChatMessages.length === 0) {
+                    console.log('No chat messages found, refreshing data...');
+                    await loadInitialData();
+                }
+                renderChatMessages(currentChatMessages.length > 0 ? currentChatMessages : allChatMessages);
+            }
+        }
+
+        // --- LISTING VERIFICATION FUNCTIONS ---
+
+        async function renderListings(listings) {
+            const tableBody = document.querySelector('#listings-table tbody');
+            tableBody.innerHTML = '';
+
+            // Update dashboard counts
+            const pendingCount = allListings.filter(l => l.status === 'pending').length;
+            const today = new Date().toISOString().slice(0, 10);
+            const approvedTodayCount = allListings.filter(l => l.status === 'approved' && new Date(l.created_at).toISOString().slice(0, 10) === today).length;
+            const rejectedCount = allListings.filter(l => l.status === 'rejected').length;
+
+            console.log('Dashboard counts:', { pendingCount, approvedTodayCount, rejectedCount });
+            
+            const pendingCountEl = document.getElementById('pending-count');
+            const approvedCountEl = document.getElementById('approved-count');
+            const rejectedCountEl = document.getElementById('rejected-count');
+            
+            if (pendingCountEl) pendingCountEl.textContent = pendingCount;
+            if (approvedCountEl) approvedCountEl.textContent = approvedTodayCount;
+            if (rejectedCountEl) rejectedCountEl.textContent = rejectedCount;
+
+            listings.forEach(listing => {
+                const statusClass = `status-${listing.status}`;
+                const row = tableBody.insertRow();
+                row.className = 'listing-row';
+
+                const createdDate = new Date(listing.created_at).toLocaleDateString();
+
+                const rejectionInfo = listing.status === 'rejected' && listing.rejection_reason 
+                    ? `<br><small style="color: #FF3366;">Reason: ${listing.rejection_reason}</small>` 
+                    : '';
+                
+                row.innerHTML = `
+                    <td><input type="checkbox" data-id="${listing._id}" class="listing-checkbox" ${listing.status === 'pending' ? '' : 'disabled'}></td>
+                    <td>${listing._id.slice(-8)}</td>
+                    <td>
+                        <strong>${listing.title}</strong><br>
+                        <small>Category: ${listing.category} | Price: ₹${listing.price}</small>
+                        ${rejectionInfo}
+                    </td>
+                    <td>${listing.owner_name || listing.owner_email_display || 'Unknown'}</td>
+                    <td>${listing.category}</td>
+                    <td>${createdDate}</td>
+                    <td><span class="status-badge ${statusClass}">${listing.status.toUpperCase()}</span></td>
+                    <td class="listing-actions">
+                        ${listing.status === 'pending' ? `
+                            <button class="approve" onclick="updateStatus('${listing._id}', 'approved')">Approve</button>
+                            <button class="reject" onclick="showModal('${listing._id}')">Reject</button>
+                        ` : listing.status === 'approved' ? `
+                            <span style="color: #4CAF50;">✓ Approved</span>
+                        ` : `
+                            <span style="color: #FF3366;">✗ Rejected</span>
+                        `}
+                    </td>
+                `;
+            });
+        }
+
+        async function applyFilters() {
+            const statusFilter = document.getElementById('filter-status').value;
+            const categoryFilter = document.getElementById('filter-category').value;
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+
+            let filtered = allListings.filter(listing => {
+                const statusMatch = statusFilter === 'all' || listing.status === statusFilter;
+                const categoryMatch = categoryFilter === 'all' || listing.category.toLowerCase() === categoryFilter;
+                const searchMatch = listing.title.toLowerCase().includes(searchInput) ||
+                                  (listing.owner_name && listing.owner_name.toLowerCase().includes(searchInput));
+                return statusMatch && categoryMatch && searchMatch;
+            });
+
+            currentListings = filtered;
+            await renderListings(currentListings);
+        }
+
+        async function updateStatus(id, newStatus, reason = '') {
+            let success = false;
+            if (newStatus === 'approved') {
+                success = await approveProduct(id);
+            } else if (newStatus === 'rejected') {
+                success = await rejectProduct(id, reason);
+            }
+
+            if (success) {
+                alert(`SUCCESS: Listing has been ${newStatus.toUpperCase()}!`);
+                // Refresh data
+                allListings = await fetchProducts();
+                await applyFilters();
+            } else {
+                alert(`FAILED: Could not ${newStatus} the listing. Please try again.`);
+            }
+        }
+
+        let currentRejectId = null; 
+        
+        function showBulkRejectModal() {
+            const selectedIds = getSelectedListings();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one listing for bulk rejection.");
+                return;
+            }
+            currentRejectId = null; // Null for bulk action
+            document.getElementById('rejection-reason').value = '';
+            document.getElementById('rejection-modal').style.display = 'flex';
+        }
+
+        function showModal(id) {
+            currentRejectId = id; // Set the ID for single rejection
+            document.getElementById('rejection-reason').value = '';
+            document.getElementById('rejection-modal').style.display = 'flex';
+        }
+
+        function hideModal() {
+            document.getElementById('rejection-modal').style.display = 'none';
+            currentRejectId = null;
+        }
+
+        async function submitRejection() {
+            const reason = document.getElementById('rejection-reason').value.trim();
+            if (!reason) {
+                alert("Please provide a rejection reason.");
+                return;
+            }
+
+            if (currentRejectId) {
+                // Single rejection
+                await updateStatus(currentRejectId, 'rejected', reason);
+            } else {
+                // Bulk rejection
+                const selectedIds = getSelectedListings();
+                if (selectedIds.length > 0) {
+                    for (const id of selectedIds) {
+                        await updateStatus(id, 'rejected', reason);
+                    }
+                    document.getElementById('select-all').checked = false;
+                }
+            }
+            hideModal();
+        }
+
+        function getSelectedListings() {
+            const checkboxes = document.querySelectorAll('#listings-table .listing-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.getAttribute('data-id'));
+        }
+
+        async function bulkAction(action) {
+            const selectedIds = getSelectedListings();
+            if (selectedIds.length === 0) {
+                alert("Please select at least one listing for bulk action.");
+                return;
+            }
+            if (action === 'approve') {
+                if (confirm(`Are you sure you want to APPROVE ${selectedIds.length} pending listing(s)?`)) {
+                    for (const id of selectedIds) {
+                        await updateStatus(id, 'approved');
+                    }
+                    document.getElementById('select-all').checked = false;
+                }
+            }
+        }
+
+        // --- USER MANAGEMENT FUNCTIONS ---
+
+        async function renderUsers(users) {
+            const tableBody = document.querySelector('#users-table tbody');
+            tableBody.innerHTML = '';
+
+            users.forEach(user => {
+                const statusClass = `status-${user.isActive ? 'active' : 'suspended'}`;
+                const row = tableBody.insertRow();
+
+                const name = `${user.firstName} ${user.lastName}`;
+                const lastLogin = user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'Never';
+                const joinedDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown';
+                const role = user.role || 'User';
+                const status = user.isActive ? 'ACTIVE' : 'SUSPENDED';
+
+                row.innerHTML = `
+                    <td><small>${user._id.slice(-8)}</small></td>
+                    <td><strong>${name}</strong></td>
+                    <td>${user.email}</td>
+                    <td>${user.phone || 'N/A'}</td>
+                    <td>${user.address || 'N/A'}</td>
+                    <td>${lastLogin}</td>
+                    <td>${role}</td>
+                    <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    <td>${user.itemsListed || 0}</td>
+                    <td>${user.itemsRented || 0}</td>
+                    <td>${user.rating ? user.rating.toFixed(1) : '0.0'}</td>
+                    <td>${joinedDate}</td>
+                    <td class="user-actions">
+                        <button onclick="editUser('${user._id}')" style="background-color: #007bff; color: white;">Edit</button>
+                        ${user.isActive ?
+                            `<button onclick="suspendUser('${user._id}')" style="background-color: #FF5722; color: white;">Suspend</button>` :
+                            `<button onclick="activateUser('${user._id}')" style="background-color: #4CAF50; color: white;">Activate</button>`
+                        }
+                    </td>
+                `;
+            });
+        }
+
+        async function applyUserFilters() {
+            const searchInput = document.getElementById('user-search-input').value.toLowerCase();
+
+            let filtered = allUsers.filter(user => {
+                const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+                return fullName.includes(searchInput) ||
+                       user.email.toLowerCase().includes(searchInput) ||
+                       user._id.toLowerCase().includes(searchInput);
+            });
+
+            currentUsers = filtered;
+            await renderUsers(currentUsers);
+        }
+
+        function editUser(id) {
+            const user = allUsers.find(u => u._id === id);
+            alert(`Edit functionality for User: ${user.name} (${user.email}).\nThis would open an edit form in a real implementation.`);
+        }
+
+        async function suspendUser(id) {
+            const user = allUsers.find(u => u._id === id);
+            if (confirm(`Are you sure you want to SUSPEND user ${user.name}?`)) {
+                // Note: API doesn't have suspend/activate endpoints yet, so this is placeholder
+                alert(`${user.name} has been SUSPENDED. (API integration needed)`);
+                // Refresh data
+                allUsers = await fetchUsers();
+                await applyUserFilters();
+            }
+        }
+
+        async function activateUser(id) {
+            const user = allUsers.find(u => u._id === id);
+            if (confirm(`Are you sure you want to ACTIVATE user ${user.name}?`)) {
+                // Note: API doesn't have suspend/activate endpoints yet, so this is placeholder
+                alert(`${user.name} has been ACTIVATED. (API integration needed)`);
+                // Refresh data
+                allUsers = await fetchUsers();
+                await applyUserFilters();
+            }
+        }
+
+        // --- Initial Load and Event Setup ---
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check if admin is logged in
+            adminToken = localStorage.getItem('adminToken');
+            if (!adminToken) {
+                console.log('No admin token, showing login modal');
+                showLoginModal();
+                return;
+            }
+            
+            console.log('Admin token found, loading initial data...');
+
+            // Load initial data
+            await loadInitialData();
+
+            // Initial render of the default view (Verification)
+            await switchView('verification');
+
+            // Setup navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const viewName = e.target.closest('a').getAttribute('data-view');
+                    console.log('Switching to view:', viewName);
+                    await switchView(viewName);
+                });
+            });
+
+            // Listing Table Select All Checkbox Logic
+            document.getElementById('select-all').addEventListener('change', (e) => {
+                const isChecked = e.target.checked;
+                document.querySelectorAll('#listings-table .listing-checkbox').forEach(cb => {
+                    // Only apply 'select all' to 'pending' items
+                    const listingId = cb.getAttribute('data-id');
+                    const listing = allListings.find(l => l.id === listingId);
+                    if (listing && listing.status === 'pending') {
+                         cb.checked = isChecked;
+                    }
+                });
+            });
+
+            // Apply listing filters on change
+            document.getElementById('filter-status').addEventListener('change', applyFilters);
+            document.getElementById('filter-category').addEventListener('change', applyFilters);
+
+            // Apply user filters on search button click
+            document.getElementById('user-search-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    applyUserFilters();
+                }
+            });
+
+            // Initial renders
+            await applyFilters();
+        });
+
+        // --- CHAT MANAGEMENT FUNCTIONS ---
+
+        async function renderChatMessages(messages) {
+            const tableBody = document.querySelector('#chat-table tbody');
+            tableBody.innerHTML = '';
+
+            messages.forEach(message => {
+                const row = tableBody.insertRow();
+
+                const timestamp = message.timestamp ? new Date(message.timestamp).toLocaleString() : 'Unknown';
+                const type = message.is_notification ? 'Notification' : (message.is_admin ? 'Admin' : 'User');
+                const productId = message.product_id || 'N/A';
+                const senderName = message.sender_name || message.sender_id || 'Unknown';
+                const messageText = message.message || message.content || '';
+
+                row.innerHTML = `
+                    <td><small>${message._id.slice(-8)}</small></td>
+                    <td>${productId}</td>
+                    <td>${senderName}</td>
+                    <td>${messageText}</td>
+                    <td>${timestamp}</td>
+                    <td>${type}</td>
+                    <td class="user-actions">
+                        <button onclick="deleteMessage('${message._id}')" style="background-color: #FF5722; color: white;">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        async function applyChatFilters() {
+            const searchInput = document.getElementById('chat-search-input').value.toLowerCase();
+
+            let filtered = allChatMessages.filter(message => {
+                return (message.content && message.content.toLowerCase().includes(searchInput)) ||
+                       (message.sender && message.sender.toLowerCase().includes(searchInput)) ||
+                       (message.product && message.product.toLowerCase().includes(searchInput));
+            });
+
+            currentChatMessages = filtered;
+            await renderChatMessages(currentChatMessages);
+        }
+
+        function deleteMessage(id) {
+            const message = allChatMessages.find(m => m._id === id);
+            if (confirm(`Are you sure you want to DELETE this message from ${message.sender}?`)) {
+                // Note: API doesn't have delete message endpoint yet, so this is placeholder
+                alert(`Message from ${message.sender} has been DELETED. (API integration needed)`);
+                // Refresh data
+                allChatMessages = allChatMessages.filter(m => m._id !== id);
+                applyChatFilters();
+            }
+        }
+
+        // Admin login function
+        async function adminLogin() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'admin@renthub.com', password: 'admin123' })
+                });
+                const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem('adminToken', data.token);
+                } else {
+                    alert('Failed to login as admin');
+                }
+            } catch (error) {
+                console.error('Admin login failed:', error);
+                alert('Failed to login as admin. Please check your connection.');
+            }
+        }
+
+        // --- Load Initial Data ---
+        async function loadInitialData() {
+            try {
+                // Auto-login as admin if not already logged in
+                adminToken = localStorage.getItem('adminToken');
+                if (!adminToken) {
+                    console.log('No admin token found, attempting auto-login...');
+                    const loginResult = await adminLogin('admin@renthub.com', 'admin123');
+                    if (!loginResult.success) {
+                        console.error('Auto-login failed:', loginResult.message);
+                        showLoginModal();
+                        return;
+                    }
+                    adminToken = localStorage.getItem('adminToken');
+                }
+
+                console.log('Loading products...');
+                allListings = await fetchProducts();
+                console.log('Products loaded:', allListings.length);
+                
+                console.log('Loading users...');
+                allUsers = await fetchUsers();
+                console.log('Users loaded:', allUsers.length);
+                
+                console.log('Loading chat messages...');
+                allChatMessages = await fetchChatMessages();
+                console.log('Chat messages loaded:', allChatMessages.length);
+                
+                currentUsers = allUsers.slice(); // Initialize currentUsers for initial display
+                currentChatMessages = allChatMessages.slice();
+                currentListings = allListings.slice(); // Initialize currentListings
+            } catch (error) {
+                console.error('Failed to load initial data:', error);
+                alert('Failed to load data. Please check your connection and try again. Error: ' + error.message);
+            }
+        }
+
+        // Function to refresh all data
+        async function refreshAllData() {
+            console.log('Refreshing all data...');
+            await loadInitialData();
+            // Re-apply current filters
+            if (document.getElementById('verification-view').style.display !== 'none') {
+                await applyFilters();
+            } else if (document.getElementById('users-view').style.display !== 'none') {
+                await applyUserFilters();
+            } else if (document.getElementById('chat-view').style.display !== 'none') {
+                await applyChatFilters();
+            }
+        }
+    </script>
+</body>
+</html>

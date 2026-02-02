@@ -1,0 +1,10 @@
+﻿flask
+flask-jwt-extended
+pymongo
+werkzeug
+flask-cors
+flask-limiter
+pyotp
+requests
+python-dotenv
+qrcode[pil]

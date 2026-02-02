@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentHub - Profile System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffffff 50%, #ffb6c1 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(255, 182, 193, 0.3);
+            padding: 40px;
+            width: 450px;
+            max-width: 90vw;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 20px 40px rgba(255, 182, 193, 0.4);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #ff69b4;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+        }
+
+        .logo p {
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            color: #444;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ffc0cb;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #f0f0f0;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            width: 0%;
+        }
+
+        .strength-weak { background: #ff4444; }
+        .strength-medium { background: #ffaa00; }
+        .strength-strong { background: #00aa00; }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffc0cb, #ffb6c1);
+            color: #444;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 192, 203, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .switch-form a {
+            color: #ff69b4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .switch-form a:hover {
+            color: #ff1493;
+            text-decoration: underline;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4, #ffc0cb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 192, 203, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(255, 192, 203, 0.3);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff69b4;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #2e7d32;
+        }
+
+        .alert.error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #c62828;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #ff69b4;
+            font-style: italic;
+        }
+
+        .security-section {
+            background: rgba(255, 240, 245, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 192, 203, 0.3);
+        }
+
+        .security-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 192, 203, 0.2);
+        }
+
+        .security-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>RentHub</h1>
+            <p>Your Premium Rental Marketplace</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alert" class="alert"></div>
+        <div id="loading" class="loading">Processing...</div>
+
+        <!-- Login Form -->
+        <div id="login-section" class="form-section active">
+            <h2 class="section-title">Welcome Back</h2>
+            
+            <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" required autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required autocomplete="current-password">
+            </div>
+            
+            <button class="btn btn-primary" onclick="login()">Sign In</button>
+            <button class="btn btn-secondary" onclick="showSection('profile')">View Profile Demo</button>
+            <button class="btn btn-danger" onclick="showAdminLogin()">Admin Login</button>
+
+            <div class="switch-form">
+                Don't have an account? <a href="#" onclick="showSection('signup')">Sign up here</a>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signup-section" class="form-section">
+            <h2 class="section-title">Join RentHub</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="signup-firstname">First Name</label>
+                    <input type="text" id="signup-firstname" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-lastname">Last Name</label>
+                    <input type="text" id="signup-lastname" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-email">Email Address</label>
+                <input type="email" id="signup-email" required autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-phone">Phone Number</label>
+                <input type="tel" id="signup-phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" required oninput="checkPasswordStrength()">
+                <div class="password-strength">
+                    <div id="password-strength-bar" class="password-strength-bar"></div>
+                </div>
+            </div>
+
+            
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required>
+            </div>
+            
+            <button class="btn btn-primary" onclick="signup()">Create Account</button>
+            
+            <div class="switch-form">
+                Already have an account? <a href="#" onclick="showSection('login')">Sign in here</a>
+            </div>
+        </div>
+
+        <!-- 2FA Setup Section -->
+        <div id="twofa-setup-section" class="form-section">
+            <h2 class="section-title">Two-Factor Authentication Setup</h2>
+            <p>Scan the QR code below with your authenticator app and enter the code to enable 2FA.</p>
+            <div id="qrcode"></div>
+            <div class="form-group">
+                <label for="twofa-code">Authentication Code</label>
+                <input type="text" id="twofa-code" maxlength="6" autocomplete="off">
+            </div>
+            <button class="btn btn-primary" onclick="verifyTwoFactor()">Verify & Enable</button>
+            <button class="btn btn-secondary" onclick="showSection('profile')">Cancel</button>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profile-section" class="form-section">
+            <div class="profile-header">
+                <div class="profile-avatar" onclick="changeAvatar()">
+                    <span id="avatar-initials">JD</span>
+                </div>
+                <h2 id="profile-name">John Doe</h2>
+                <p id="profile-email">john.doe@example.com</p>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Items Rented</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Items Listed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4.8</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="profile-firstname">First Name</label>
+                    <input type="text" id="profile-firstname" value="John">
+                </div>
+                <div class="form-group">
+                    <label for="profile-lastname">Last Name</label>
+                    <input type="text" id="profile-lastname" value="Doe">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="profile-email-edit">Email</label>
+                <input type="email" id="profile-email-edit" value="john.doe@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="profile-phone">Phone</label>
+                <input type="tel" id="profile-phone" value="+1234567890">
+            </div>
+
+            <div class="form-group">
+                <label for="profile-address">Address</label>
+                <textarea id="profile-address" placeholder="Enter your address">123 Main Street, City, State, ZIP</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="profile-bio">Bio</label>
+                <textarea id="profile-bio" placeholder="Tell us about yourself">Passionate about sustainable living and sharing resources through rental marketplace.</textarea>
+            </div>
+
+            <div class="security-section">
+                <h3 style="color: #ff69b4; margin-bottom: 15px;">Security Settings</h3>
+                
+                <div class="security-item">
+                    <div>
+                        <strong>Two-Factor Authentication</strong>
+                        <br><small>Add an extra layer of security</small>
+                    </div>
+                    <button class="btn" style="width: auto; padding: 8px 16px; margin: 0;" onclick="toggleTwoFactor()">
+                        <span id="2fa-status">Enable</span>
+                    </button>
+                </div>
+                
+                <div class="security-item">
+                    <div>
+                        <strong>Change Password</strong>
+                        <br><small>Last changed: 30 days ago</small>
+                    </div>
+                    <button class="btn btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="showChangePassword()">Change</button>
+                </div>
+                
+                <div class="security-item">
+                    <div>
+                        <strong>Login History</strong>
+                        <br><small>View recent account activity</small>
+                    </div>
+                    <button class="btn btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="showLoginHistory()">View</button>
+                </div>
+
+                <div class="security-item">
+                    <div>
+                        <strong>My Wishlist</strong>
+                        <br><small>View your saved items</small>
+                    </div>
+                    <button class="btn btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="window.location.href='wishlist.html'">View</button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="updateProfile()">Save Changes</button>
+            <button class="btn btn-secondary" onclick="showSection('login')">Back to Login</button>
+            <button class="btn btn-danger" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+        <script>
+            const API_BASE_URL = "http://127.0.0.1:5000/api";
+
+            let currentUser = null;
+            let twoFactorEnabled = false;
+            let twoFactorSecret = null;
+
+            function showSection(section) {
+                document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(section + '-section').classList.add('active');
+            }
+
+            function showAlert(message, type = 'success') {
+                const alert = document.getElementById('alert');
+                alert.textContent = message;
+                alert.className = `alert ${type}`;
+                alert.style.display = 'block';
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+
+            function showLoading(show = true) {
+                document.getElementById('loading').style.display = show ? 'block' : 'none';
+            }
+
+            function checkPasswordStrength() {
+                const password = document.getElementById('signup-password').value;
+                const strengthBar = document.getElementById('password-strength-bar');
+                
+                let strength = 0;
+                if (password.length >= 12) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+                const percentage = (strength / 5) * 100;
+                strengthBar.style.width = percentage + '%';
+
+                if (strength <= 2) {
+                    strengthBar.className = 'password-strength-bar strength-weak';
+                } else if (strength <= 4) {
+                    strengthBar.className = 'password-strength-bar strength-medium';
+                } else {
+                    strengthBar.className = 'password-strength-bar strength-strong';
+                }
+            }
+
+            async function login() {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const twofaCode = document.getElementById('login-twofa-code')?.value || '';
+
+                if (!email || !password) {
+                    showAlert('Please fill in all fields', 'error');
+                    return;
+                }
+
+                showLoading(true);
+
+                try {
+                    const loginData = { email, password };
+                    if (twofaCode) {
+                        loginData.twofaCode = twofaCode;
+                    }
+
+                    const response = await fetch(`${API_BASE_URL}/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(loginData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        currentUser = data.user;
+                        twoFactorEnabled = data.user.twoFactorEnabled;
+
+                        showAlert('Login successful!');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    } else if (data.requires2FA) {
+                        // Show 2FA input field
+                        showTwoFactorInput();
+                        showAlert('Please enter your 2FA code to complete login.', 'error');
+                    } else {
+                        showAlert(data.message || 'Login failed', 'error');
+                        grecaptcha.reset();
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showAlert('Connection error. Please try again.', 'error');
+                    grecaptcha.reset();
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            function showTwoFactorInput() {
+                let twofaGroup = document.getElementById('login-twofa-group');
+                if (!twofaGroup) {
+                    twofaGroup = document.createElement('div');
+                    twofaGroup.id = 'login-twofa-group';
+                    twofaGroup.className = 'form-group';
+                    twofaGroup.innerHTML = `
+                        <label for="login-twofa-code">Two-Factor Authentication Code</label>
+                        <input type="text" id="login-twofa-code" maxlength="6" autocomplete="off" required>
+                    `;
+                    document.getElementById('login-password').parentNode.after(twofaGroup);
+                }
+                document.getElementById('login-twofa-code').focus();
+            }
+
+            async function signup() {
+                const firstName = document.getElementById('signup-firstname').value;
+                const lastName = document.getElementById('signup-lastname').value;
+                const email = document.getElementById('signup-email').value;
+                const phone = document.getElementById('signup-phone').value;
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
+                    showAlert('Please fill in all fields', 'error');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showAlert('Passwords do not match', 'error');
+                    return;
+                }
+
+                if (password.length < 12) {
+                    showAlert('Password must be at least 12 characters long', 'error');
+                    return;
+                }
+
+                showLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/signup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            firstName,
+                            lastName,
+                            email,
+                            phone,
+                            password
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showAlert('Account created successfully! Please login.');
+                        setTimeout(() => {
+                            showSection('login');
+                        }, 1500);
+                    } else {
+                        showAlert(data.message || 'Signup failed', 'error');
+                        grecaptcha.reset();
+                    }
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    showAlert('Connection error. Please try again.', 'error');
+                    grecaptcha.reset();
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            function loadProfile() {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+                document.getElementById('profile-name').textContent = `${user.firstName || 'John'} ${user.lastName || 'Doe'}`;
+                document.getElementById('profile-email').textContent = user.email || 'john.doe@example.com';
+                document.getElementById('avatar-initials').textContent = `${(user.firstName || 'J')[0]}${(user.lastName || 'D')[0]}`;
+
+                document.getElementById('profile-firstname').value = user.firstName || '';
+                document.getElementById('profile-lastname').value = user.lastName || '';
+                document.getElementById('profile-email-edit').value = user.email || '';
+                document.getElementById('profile-phone').value = user.phone || '';
+                document.getElementById('profile-address').value = user.address || '';
+                document.getElementById('profile-bio').value = user.bio || '';
+
+                // Update 2FA status button
+                const twofaButton = document.getElementById('2fa-status');
+                twofaButton.textContent = user.twoFactorEnabled ? 'Disable' : 'Enable';
+
+                // Add Admin Panel link if user is admin
+                if (user.role === 'admin') {
+                    const securitySection = document.querySelector('.security-section');
+                    // Remove existing admin panel item if present
+                    const existingAdminItem = document.getElementById('admin-panel-item');
+                    if (existingAdminItem) {
+                        existingAdminItem.remove();
+                    }
+
+                    const adminItem = document.createElement('div');
+                    adminItem.id = 'admin-panel-item';
+                    adminItem.className = 'security-item';
+                    adminItem.innerHTML = `
+                        <div>
+                            <strong>Admin Panel</strong>
+                            <br><small>Manage the rental marketplace</small>
+                        </div>
+                        <button class="btn btn-secondary" style="width: auto; padding: 8px 16px; margin: 0;" onclick="window.open('admin.html', '_blank')">Open</button>
+                    `;
+                    securitySection.appendChild(adminItem);
+                } else {
+                    // Remove admin panel item if user is not admin
+                    const existingAdminItem = document.getElementById('admin-panel-item');
+                    if (existingAdminItem) {
+                        existingAdminItem.remove();
+                    }
+                }
+            }
+
+            async function updateProfile() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showAlert('Please login first', 'error');
+                    return;
+                }
+
+                const profileData = {
+                    firstName: document.getElementById('profile-firstname').value,
+                    lastName: document.getElementById('profile-lastname').value,
+                    email: document.getElementById('profile-email-edit').value,
+                    phone: document.getElementById('profile-phone').value,
+                    address: document.getElementById('profile-address').value,
+                    bio: document.getElementById('profile-bio').value
+                };
+
+                showLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profileData)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        loadProfile();
+                        showAlert('Profile updated successfully!');
+                    } else {
+                        showAlert(data.message || 'Update failed', 'error');
+                    }
+                } catch (error) {
+                    console.error('Profile update error:', error);
+                    showAlert('Connection error. Please try again.', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            async function toggleTwoFactor() {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showAlert('Please login first', 'error');
+                    return;
+                }
+
+                const button = document.getElementById('2fa-status');
+                const currentStatus = button.textContent.toLowerCase();
+
+                if (currentStatus === 'enable') {
+                    // Setup 2FA
+                    showLoading(true);
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/setup-2fa`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Display QR code
+                            document.getElementById('qrcode').innerHTML = `<img src="${data.qrCode}" alt="QR Code" style="max-width: 200px;">`;
+                            document.getElementById('twofa-code').value = '';
+                            showSection('twofa-setup');
+                        } else {
+                            showAlert(data.message || 'Failed to setup 2FA', 'error');
+                        }
+                    } catch (error) {
+                        console.error('2FA setup error:', error);
+                        showAlert('Connection error. Please try again.', 'error');
+                    } finally {
+                        showLoading(false);
+                    }
+                } else {
+                    // Disable 2FA
+                    showLoading(true);
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/toggle-2fa`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            button.textContent = 'Enable';
+                            showAlert('Two-factor authentication disabled!');
+                        } else {
+                            showAlert(data.message || 'Failed to disable 2FA', 'error');
+                        }
+                    } catch (error) {
+                        console.error('2FA disable error:', error);
+                        showAlert('Connection error. Please try again.', 'error');
+                    } finally {
+                        showLoading(false);
+                    }
+                }
+            }
+
+            async function verifyTwoFactor() {
+                const code = document.getElementById('twofa-code').value.trim();
+                if (code.length !== 6) {
+                    showAlert('Please enter a valid 6-digit code', 'error');
+                    return;
+                }
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showAlert('Please login first', 'error');
+                    return;
+                }
+
+                showLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/verify-2fa-setup`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ code })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        showAlert('Two-factor authentication enabled successfully!');
+                        // Update button status
+                        document.getElementById('2fa-status').textContent = 'Disable';
+                        showSection('profile');
+                    } else {
+                        showAlert(data.message || 'Verification failed', 'error');
+                    }
+                } catch (error) {
+                    console.error('2FA verification error:', error);
+                    showAlert('Connection error. Please try again.', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            function showChangePassword() {
+                const newPassword = prompt('Enter new password:');
+                if (newPassword && newPassword.length >= 12) {
+                    showAlert('Password changed successfully!');
+                } else if (newPassword) {
+                    showAlert('Password must be at least 12 characters long', 'error');
+                }
+            }
+
+            function showLoginHistory() {
+                alert('Login History:\n\n' +
+                      '• Today, 2:30 PM - Chrome on Windows\n' +
+                      '• Yesterday, 9:15 AM - Safari on iPhone\n' +
+                      '• 3 days ago, 7:45 PM - Firefox on Mac\n' +
+                      '• 1 week ago, 11:20 AM - Chrome on Android');
+            }
+
+            function changeAvatar() {
+                const colors = ['#ff69b4', '#ff1493', '#ffc0cb', '#ffb6c1', '#ff6b6b'];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                document.querySelector('.profile-avatar').style.background = `linear-gradient(135deg, ${randomColor}, #ffc0cb)`;
+                showAlert('Avatar updated!');
+            }
+
+            function showAdminLogin() {
+                const email = prompt('Admin Email:');
+                const password = prompt('Admin Password:');
+
+                if (email && password) {
+                    adminLogin(email, password);
+                }
+            }
+
+            async function adminLogin(email, password) {
+                showLoading(true);
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/admin/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        showAlert('Admin login successful!');
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1000);
+                    } else {
+                        showAlert(data.message || 'Admin login failed', 'error');
+                    }
+                } catch (error) {
+                    console.error('Admin login error:', error);
+                    showAlert('Connection error. Please try again.', 'error');
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            function logout() {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    currentUser = null;
+                    showAlert('Logged out successfully!');
+                    showSection('login');
+                }
+            }
+
+            // Initialize
+            document.addEventListener('DOMContentLoaded', function() {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    loadProfile();
+                    showSection('profile');
+                }
+            });
+        </script>
+    </body>
+</html>

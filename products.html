@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title id="page-title">Products - RentHuB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo" onclick="navigateHome()">RentHuB</div>
+            <div class="nav-links">
+                <a href="#" data-page="home" onclick="navigateHome(event)">Home</a>
+                <a href="#" data-page="products" onclick="navigateProducts(event)" class="active">Products</a>
+                <a href="#" data-page="categories" onclick="navigateCategories(event)">Categories</a>
+                <a href="#" data-page="about" onclick="navigateAbout(event)">About</a>
+                <div class="cart-container">
+                    <button class="cart-icon" onclick="toggleCart()" aria-label="Shopping cart">
+                        <i class="fas fa-shopping-cart"></i>
+                    </button>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="search-bar-container">
+            <input type="text" id="search-input" placeholder="Search for products..." />
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div class="top-section">
+            <h1 id="category-title">All Products</h1>
+            <div class="filter-sort-options">
+                <select id="sort-by">
+                    <option value="default">Sort by</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="name-asc">Name: A-Z</option>
+                </select>
+                <select id="filter-by">
+                    <option value="all">All Categories</option>
+                    <option value="cars">Cars</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="tools">Tools</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="item-grid" id="product-list">
+            </div>
+
+        <div class="no-results-message" id="no-results-message" style="display: none;">
+            No products found in this category.
+        </div>
+    </main>
+</body>
+</html>
